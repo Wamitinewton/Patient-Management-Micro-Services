@@ -1,0 +1,50 @@
+services:
+  patient-service-db:
+    image: postgres:latest
+    container_name: patient-service-db
+    ports:
+      - "5000:5432"
+    volumes:
+      - patient-service-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Wamiti@55
+      POSTGRES_DB: db
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  patient-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: patient-service
+    ports:
+      - "4000:4000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://patient-service-db:5432/db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: Wamiti@55
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_SQL_INIT_MODE: always
+      LOGGING_LEVEL_ROOT: info
+      SERVER_PORT: 4000
+    networks:
+      - internal
+    depends_on:
+      patient-service-db:
+        condition: service_healthy
+
+volumes:
+  patient-service-db-data:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

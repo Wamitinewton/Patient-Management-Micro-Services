@@ -1,0 +1,10 @@
+### Update Patient Request
+PUT http://localhost:4000/patients/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "name": "John Newton",
+  "email": "wamitinewton@gmail.com",
+  "address": "1233 main street",
+  "dateOfBirth": "1995-09-09"
+}
