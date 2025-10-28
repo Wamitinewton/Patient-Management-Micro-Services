@@ -5,7 +5,7 @@ services:
     ports:
       - "5000:5432"
     volumes:
-      - patient-service-db-data:/var/lib/postgresql/data
+      - patient-service-db-data:/var/lib/postgresql
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: Wamiti@55
@@ -22,6 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     container_name: patient-service
     ports:
       - "4000:4000"
